@@ -38,7 +38,6 @@ func GetCharactersByOwner(owner string) ([]Character, error) {
 	return charactersCopy, nil
 }
 
-// Añade esto al final de models/character.go
 func DeleteCharacter(id int, owner string) error {
 	for i, c := range Characters {
 		if c.ID == id {
