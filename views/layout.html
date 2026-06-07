@@ -1,0 +1,468 @@
+{{define "layout"}}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Rol Manager</title>
+    <style>
+        :root {
+            --bg: #121212;
+            --panel: #1d1d1f;
+            --panel-soft: #252529;
+            --primary: #b47cff;
+            --primary-dark: #8f52e8;
+            --accent: #ffca6b;
+            --text: #f3f3f3;
+            --muted: #b6b6b6;
+            --danger: #ff6b6b;
+            --success: #6ee7a8;
+            --warning: #ffd166;
+            --border: #35353a;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(180, 124, 255, 0.18), transparent 35%),
+                radial-gradient(circle at bottom right, rgba(255, 202, 107, 0.08), transparent 30%),
+                var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .topbar {
+            border-bottom: 1px solid var(--border);
+            background: rgba(18, 18, 18, 0.85);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .topbar-inner {
+            max-width: 1150px;
+            margin: 0 auto;
+            padding: 18px 22px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #111;
+            font-size: 24px;
+            font-weight: 900;
+            box-shadow: 0 10px 30px rgba(180, 124, 255, 0.25);
+        }
+
+        .brand-text h1 {
+            margin: 0;
+            font-size: 23px;
+            letter-spacing: 0.3px;
+        }
+
+        .brand-text p {
+            margin: 3px 0 0 0;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        nav {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        nav a {
+            color: var(--text);
+            padding: 9px 13px;
+            border-radius: 999px;
+            background: transparent;
+            border: 1px solid transparent;
+            font-size: 14px;
+        }
+
+        nav a:hover {
+            text-decoration: none;
+            border-color: var(--border);
+            background: var(--panel-soft);
+        }
+
+        /* Pastilla que muestra el nick del usuario logueado */
+        .nav-user {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--accent);
+            background: rgba(255, 202, 107, 0.08);
+            border: 1px solid rgba(255, 202, 107, 0.22);
+            padding: 8px 13px;
+            border-radius: 999px;
+        }
+
+        .page {
+            max-width: 1150px;
+            margin: 0 auto;
+            padding: 32px 22px 50px 22px;
+        }
+
+        .hero {
+            background:
+                linear-gradient(135deg, rgba(180, 124, 255, 0.16), rgba(255, 202, 107, 0.08)),
+                var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 34px;
+            margin-bottom: 28px;
+            box-shadow: 0 18px 55px rgba(0, 0, 0, 0.28);
+        }
+
+        .hero h2 {
+            font-size: 34px;
+            margin: 0 0 10px 0;
+            line-height: 1.1;
+        }
+
+        .hero p {
+            color: var(--muted);
+            margin: 0;
+            max-width: 760px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            margin: 28px 0 16px 0;
+        }
+
+        .section-title h3 {
+            margin: 0;
+            font-size: 22px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            border: 1px solid var(--border);
+            background: var(--panel-soft);
+            color: var(--muted);
+            padding: 7px 11px;
+            border-radius: 999px;
+            font-size: 13px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 18px;
+        }
+
+        .card {
+            background: rgba(29, 29, 31, 0.94);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 20px;
+            box-shadow: 0 14px 38px rgba(0, 0, 0, 0.22);
+            transition: transform 0.15s ease, border-color 0.15s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(180, 124, 255, 0.55);
+        }
+
+        .card h3 {
+            margin: 0 0 10px 0;
+            font-size: 20px;
+        }
+
+        .card p {
+            color: var(--muted);
+            line-height: 1.55;
+        }
+
+        .meta {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin: 13px 0;
+        }
+
+        .meta span {
+            font-size: 13px;
+            color: var(--muted);
+            background: #18181a;
+            border: 1px solid var(--border);
+            padding: 6px 9px;
+            border-radius: 999px;
+        }
+
+        .form-box {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            padding: 24px;
+            margin-bottom: 26px;
+            box-shadow: 0 16px 45px rgba(0, 0, 0, 0.24);
+        }
+
+        .form-box h3 {
+            margin-top: 0;
+            font-size: 22px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .form-full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            color: #e7e7e7;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            border: 1px solid var(--border);
+            background: #151517;
+            color: var(--text);
+            padding: 12px 13px;
+            border-radius: 12px;
+            outline: none;
+            font-size: 15px;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(180, 124, 255, 0.12);
+        }
+
+        textarea {
+            min-height: 110px;
+            resize: vertical;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border: none;
+            border-radius: 12px;
+            padding: 11px 16px;
+            cursor: pointer;
+            font-weight: 800;
+            font-size: 14px;
+            color: #111;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            box-shadow: 0 10px 24px rgba(180, 124, 255, 0.18);
+        }
+
+        .btn:hover {
+            filter: brightness(1.08);
+        }
+
+        .btn-small {
+            padding: 8px 11px;
+            border-radius: 10px;
+            font-size: 13px;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ff6b6b, #ffb86b);
+            color: #160b0b;
+        }
+
+        .btn-muted {
+            background: #2c2c31;
+            color: var(--text);
+            border: 1px solid var(--border);
+            box-shadow: none;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .inline-form {
+            display: inline;
+            margin: 0;
+        }
+
+        .empty {
+            background: rgba(29, 29, 31, 0.72);
+            border: 1px dashed var(--border);
+            border-radius: 18px;
+            padding: 26px;
+            color: var(--muted);
+            text-align: center;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-weight: 800;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        .pendiente {
+            color: #1f1600;
+            background: var(--warning);
+        }
+
+        .aceptado {
+            color: #03150b;
+            background: var(--success);
+        }
+
+        .rechazado {
+            color: #240707;
+            background: var(--danger);
+        }
+
+        .guide-step {
+            display: grid;
+            grid-template-columns: 54px 1fr;
+            gap: 16px;
+            align-items: flex-start;
+        }
+
+        .step-number {
+            width: 54px;
+            height: 54px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: #111;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        footer {
+            color: var(--muted);
+            text-align: center;
+            border-top: 1px solid var(--border);
+            padding: 24px;
+            font-size: 13px;
+        }
+
+        @media (max-width: 720px) {
+            .topbar-inner {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            nav {
+                justify-content: flex-start;
+            }
+
+            .hero {
+                padding: 24px;
+            }
+
+            .hero h2 {
+                font-size: 27px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="topbar">
+        <div class="topbar-inner">
+            <div class="brand">
+                <div class="brand-icon">R</div>
+                <div class="brand-text">
+                    <h1>Rol Manager</h1>
+                    <p>Organizador de personajes y partidas de rol</p>
+                </div>
+            </div>
+
+            <nav>
+                <a href="/">Inicio</a>
+                <a href="/personajes">Personajes</a>
+                <a href="/partidas">Partidas</a>
+                <a href="/guia">Guía</a>
+                {{if .CurrentUser}}
+                <span class="nav-user">👤 {{.CurrentUser}}</span>
+                <a href="/logout">Salir</a>
+                {{else}}
+                <a href="/login">Entrar</a>
+                {{end}}
+            </nav>
+        </div>
+    </div>
+
+    <main class="page">
+        {{template "content" .}}
+    </main>
+
+    <footer>
+        Organiza tus campañas, personajes y partidas en un solo lugar. · Rol Manager
+    </footer>
+
+</body>
+
+</html>
+{{end}}

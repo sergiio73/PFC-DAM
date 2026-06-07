@@ -1,0 +1,84 @@
+{{define "content"}}
+<section class="hero">
+    <h2>Gestión de partidas</h2>
+    <p>
+        El Master crea la partida y los jugadores se apuntan con uno de sus personajes.
+        El Master acepta o rechaza a cada jugador desde el detalle de la partida.
+    </p>
+</section>
+
+{{if .CurrentUser}}
+<form class="form-box" action="/partidas/crear" method="POST">
+    <h3>Crear nueva partida</h3>
+    <p style="color: var(--muted); margin: -8px 0 16px 0; font-size: 14px;">
+        Serás el Master como: <strong style="color: var(--accent);">{{.CurrentUser}}</strong>
+    </p>
+
+    <div class="form-grid">
+        <div>
+            <label>Título</label>
+            <input type="text" name="title" placeholder="Ej: La cripta del rey perdido" required>
+        </div>
+
+        <div>
+            <label>Fecha</label>
+            <input type="date" name="date" required>
+        </div>
+        <div>
+            <label>Ubicación</label>
+            <input type="text" name="location" placeholder="Ej: Casa de Laura, Sala B del centro...">
+        </div>
+
+        <div>
+            <label>Máximo de jugadores</label>
+            <input type="number" name="max_players" min="1" max="20" value="5" required>
+        </div>
+
+        <div class="form-full">
+            <label>Descripción</label>
+            <textarea name="description" placeholder="Resume la aventura o campaña..." required></textarea>
+        </div>
+    </div>
+
+    <div class="actions">
+        <button class="btn" type="submit">Crear partida</button>
+    </div>
+</form>
+{{else}}
+<div class="empty">
+    Necesitas <a href="/login">iniciar sesión</a> para crear una partida.
+</div>
+{{end}}
+
+<div class="section-title">
+    <h3>Partidas disponibles</h3>
+    <span class="badge">Mesas abiertas</span>
+</div>
+
+{{if .Games}}
+<div class="grid">
+    {{range .Games}}
+    <article class="card">
+        <h3>{{.Title}}</h3>
+
+        <p>{{.Description}}</p>
+
+        <div class="meta">
+            <span>Fecha: {{.Date}}</span>
+            <span>{{.Location}}</span>
+            <span>Master: {{.MasterName}}</span>
+            <span>Plazas: {{.MaxPlayers}}</span>
+        </div>
+
+        <div class="actions">
+            <a class="btn btn-small" href="/partidas/ver?id={{.ID}}">Entrar en la partida</a>
+        </div>
+    </article>
+    {{end}}
+</div>
+{{else}}
+<div class="empty">
+    No hay partidas creadas todavía. Crea una para empezar.
+</div>
+{{end}}
+{{end}}

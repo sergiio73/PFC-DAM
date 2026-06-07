@@ -1,0 +1,108 @@
+{{define "content"}}
+<section class="hero">
+    <h2>{{.Game.Title}}</h2>
+    <p>{{.Game.Description}}</p>
+
+    <div class="meta">
+        <span>Fecha: {{.Game.Date}}</span>
+        <span>{{.Game.Location}}</span>
+        <span>Master: {{.Game.MasterName}}</span>
+        <span>Plazas: {{.AcceptedCount}}/{{.Game.MaxPlayers}}</span>
+    </div>
+</section>
+
+<div class="section-title">
+    <h3>Inscribirse en la partida</h3>
+    <span class="badge">Elige personaje</span>
+</div>
+
+{{if .CurrentUser}}
+{{if .Characters}}
+<form class="form-box" action="/inscripciones/crear" method="POST">
+    <input type="hidden" name="game_id" value="{{.Game.ID}}">
+
+    <p style="color: var(--muted); margin: 0 0 16px 0; font-size: 14px;">
+        Te apuntarás como jugador: <strong style="color: var(--accent);">{{.CurrentUser}}</strong>
+    </p>
+
+    <div class="form-grid">
+        <div class="form-full">
+            <label>Personaje</label>
+            <select name="character_id" required>
+                {{range .Characters}}
+                <option value="{{.ID}}">
+                    {{.Name}} — {{.Class}} nivel {{.Level}}
+                </option>
+                {{end}}
+            </select>
+        </div>
+    </div>
+
+    <div class="actions">
+        <button class="btn" type="submit">Apuntarse a la partida</button>
+    </div>
+</form>
+{{else}}
+<div class="empty">
+    Aún no tienes personajes. Crea uno antes de apuntarte.
+    <br><br>
+    <a class="btn btn-small" href="/personajes">Crear personaje</a>
+</div>
+{{end}}
+{{else}}
+<div class="empty">
+    <a href="/login">Inicia sesión</a> para poder apuntarte a esta partida.
+</div>
+{{end}}
+
+<div class="section-title">
+    <h3>Jugadores apuntados</h3>
+    <span class="badge">Control del Master</span>
+</div>
+
+{{if .Registrations}}
+<div class="grid">
+    {{range .Registrations}}
+    <article class="card">
+        <h3>{{.CharacterName}}</h3>
+
+        <div class="meta">
+            <span>Jugador: {{.PlayerName}}</span>
+            <span>Clase: {{.Class}}</span>
+            <span>Raza: {{.Race}}</span>
+            <span>Nivel: {{.Level}}</span>
+        </div>
+
+        <p>
+            Estado:
+            <span class="status {{.Status}}">{{.Status}}</span>
+        </p>
+
+        {{if $.IsUserMaster}}
+        <div class="actions">
+            <form class="inline-form" action="/inscripciones/aceptar" method="POST">
+                <input type="hidden" name="registration_id" value="{{.ID}}">
+                <input type="hidden" name="game_id" value="{{$.Game.ID}}">
+                <button class="btn btn-small" type="submit">Aceptar</button>
+            </form>
+
+            <form class="inline-form" action="/inscripciones/rechazar" method="POST">
+                <input type="hidden" name="registration_id" value="{{.ID}}">
+                <input type="hidden" name="game_id" value="{{$.Game.ID}}">
+                <button class="btn btn-small btn-danger" type="submit">Rechazar</button>
+            </form>
+        </div>
+        {{end}}
+    </article>
+    {{end}}
+</div>
+{{else}}
+<div class="empty">
+    Todavía no hay jugadores apuntados a esta partida.
+</div>
+{{end}}
+
+<div class="actions">
+    <a class="btn btn-muted" href="/partidas">Volver a partidas</a>
+</div>
+{{end}}

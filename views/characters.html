@@ -1,0 +1,92 @@
+{{define "content"}}
+<section class="hero">
+    <h2>Gestión de personajes</h2>
+    <p>
+        Aquí puedes crear los personajes que luego usarás para apuntarte a las partidas.
+        Solo tú ves y gestionas los tuyos.
+    </p>
+</section>
+
+{{if .CurrentUser}}
+<form class="form-box" action="/personajes/crear" method="POST">
+    <h3>Crear nuevo personaje</h3>
+
+    <div class="form-grid">
+        <div>
+            <label>Nombre</label>
+            <input type="text" name="name" placeholder="Ej: Elandor" required>
+        </div>
+
+        <div>
+            <label>Clase</label>
+            <input type="text" name="class" placeholder="Guerrero, Mago, Pícaro..." required>
+        </div>
+
+        <div>
+            <label>Raza</label>
+            <input type="text" name="race" placeholder="Humano, Elfo, Enano..." required>
+        </div>
+
+        <div>
+            <label>Nivel</label>
+            <input type="number" name="level" min="1" value="1" required>
+        </div>
+
+        <div class="form-full">
+            <label>Historia</label>
+            <textarea name="history" placeholder="Cuenta un poco de dónde viene el personaje..."></textarea>
+        </div>
+    </div>
+
+    <div class="actions">
+        <button class="btn" type="submit">Guardar personaje</button>
+    </div>
+</form>
+{{else}}
+<div class="empty">
+    Necesitas <a href="/login">iniciar sesión</a> para crear y ver tus personajes.
+</div>
+{{end}}
+
+<div class="section-title">
+    <h3>Tus personajes</h3>
+    <span class="badge">Lista de aventureros</span>
+</div>
+
+{{if .Characters}}
+<div class="grid">
+    {{range .Characters}}
+    <article class="card">
+        <h3>{{.Name}}</h3>
+
+        <div class="meta">
+            <span>Clase: {{.Class}}</span>
+            <span>Raza: {{.Race}}</span>
+            <span>Nivel: {{.Level}}</span>
+        </div>
+
+        <p>
+            {{if .History}}
+            {{.History}}
+            {{else}}
+            Este personaje todavía no tiene historia escrita.
+            {{end}}
+        </p>
+
+        <div class="actions">
+            <form class="inline-form" action="/personajes/eliminar" method="POST">
+                <input type="hidden" name="character_id" value="{{.ID}}">
+                <button class="btn btn-small btn-danger" type="submit">Eliminar</button>
+            </form>
+        </div>
+    </article>
+    {{end}}
+</div>
+{{else}}
+{{if .CurrentUser}}
+<div class="empty">
+    Todavía no tienes personajes. Crea el primero usando el formulario.
+</div>
+{{end}}
+{{end}}
+{{end}}

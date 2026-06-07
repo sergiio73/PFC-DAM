@@ -1,0 +1,24 @@
+{{define "content"}}
+<section class="hero">
+    <h2>Identificarse</h2>
+    <p>
+        Pon tu nombre o nick para empezar. Es lo único que necesitas para
+        crear personajes, abrir partidas o apuntarte a las de otros.
+    </p>
+</section>
+
+<form class="form-box" action="/login" method="POST">
+    <h3>Iniciar sesión</h3>
+
+    <div class="form-grid">
+        <div class="form-full">
+            <label>Nombre o nick</label>
+            <input type="text" name="username" placeholder="Ej: Laura, Gandalf42, ElMasterOscuro..." required autofocus>
+        </div>
+    </div>
+
+    <div class="actions">
+        <button class="btn" type="submit">Entrar</button>
+    </div>
+</form>
+{{end}}
